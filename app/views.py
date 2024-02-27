@@ -47,6 +47,9 @@ def login_user(request):
 def logout_user(request):
     try:
         token_key = request.headers.get('Authorization').split(' ')[1]
+        print("token_key")
+        print(token_key)
+
         if not token_key:
             return Response({"detail": "Token not provided (%s)" % token_key}, status=status.HTTP_400_BAD_REQUEST)
         token = get_object_or_404(Token, key=token_key)
