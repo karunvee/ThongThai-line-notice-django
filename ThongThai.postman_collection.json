@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "fae0aa09-1e8e-4c41-befa-5dd8a6419c63",
-		"name": "ThongThai",
+		"_postman_id": "f14e545e-35bc-4f0a-a050-2d8c43812596",
+		"name": "Project X",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24120243"
+		"_exporter_id": "24055280"
 	},
 	"item": [
 		{
@@ -105,7 +105,7 @@
 							"formdata": [
 								{
 									"key": "config_id",
-									"value": "2",
+									"value": "7",
 									"type": "text"
 								},
 								{
@@ -312,18 +312,7 @@
 						],
 						"body": {
 							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "admin123",
-									"type": "text"
-								}
-							]
+							"urlencoded": []
 						},
 						"url": {
 							"raw": "http://localhost:8000/api/logout/",
