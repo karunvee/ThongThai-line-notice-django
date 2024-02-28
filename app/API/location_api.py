@@ -61,10 +61,10 @@ def delete_location(request):
 def update_location(request):
     try:
         location_id = request.data.get('location_id')
-        new_name = request.data.get('new_name')
+        location_name = request.data.get('location_name')
         floor_id = request.data.get('floor_id')
 
-        Location.objects.filter(pk = location_id).update(location_name = new_name, floorNumber = FloorNumber.objects.get(pk = floor_id))
+        Location.objects.filter(pk = location_id).update(location_name = location_name, floorNumber = FloorNumber.objects.get(pk = floor_id))
         return Response({"detail": f"{location_id} was updated"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -551,7 +551,7 @@
 							"formdata": [
 								{
 									"key": "floor_id",
-									"value": "6",
+									"value": "1",
 									"type": "text"
 								},
 								{
@@ -700,7 +700,7 @@
 									"type": "text"
 								},
 								{
-									"key": "new_name",
+									"key": "building_name",
 									"value": "Tower BB",
 									"type": "text"
 								}
@@ -743,7 +743,7 @@
 									"type": "text"
 								},
 								{
-									"key": "new_name",
+									"key": "floor_name",
 									"value": "Floor 22",
 									"type": "text"
 								},
@@ -791,7 +791,7 @@
 									"type": "text"
 								},
 								{
-									"key": "new_name",
+									"key": "location_name",
 									"value": "New Production Line",
 									"type": "text"
 								},
@@ -902,6 +902,49 @@
 					"response": []
 				},
 				{
+					"name": "Add Sub Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "message_id",
+									"value": "7",
+									"type": "text"
+								},
+								{
+									"key": "detail",
+									"value": "Test Sub message",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/sub_message/add/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sub_message",
+								"add",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Message",
 					"request": {
 						"method": "DELETE",
@@ -936,6 +979,40 @@
 					"response": []
 				},
 				{
+					"name": "Sub Message",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/sub_message/delete/?sub_message_id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sub_message",
+								"delete",
+								""
+							],
+							"query": [
+								{
+									"key": "sub_message_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Message",
 					"request": {
 						"method": "PUT",
@@ -957,7 +1034,8 @@
 								{
 									"key": "location_id",
 									"value": "4",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "topic",

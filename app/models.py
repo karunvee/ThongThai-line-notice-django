@@ -3,18 +3,20 @@ from django.utils import timezone
 
 
 # Create your models here.
-class LineNotify(models.Model):
-    group_name = models.CharField(max_length=20)
-    token_access = models.CharField(max_length=43)
-
-    def __str__(self):
-        return self.token_access
 
 class Building(models.Model):
     building_name = models.CharField(max_length=20)
     def __str__(self):
         return self.building_name
+    
+class LineNotify(models.Model):
+    group_name = models.CharField(max_length=20)
+    token_access = models.CharField(max_length=43)
+    buildingInfo = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.token_access
+    
 class FloorNumber(models.Model):
     floor_name = models.CharField(max_length=100)
     buildingInfo = models.ForeignKey(Building, on_delete=models.CASCADE, null=True)
@@ -28,20 +30,35 @@ class Location(models.Model):
         return "%s, %s" % (self.floorNumber, self.location_name)
 
 
+class StandardMessage(models.Model):
+    topic = models.CharField(max_length = 100)    
+    description = models.TextField()
+    date_created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.topic
+
 class Message(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
     topic = models.CharField(max_length = 100)    
     description = models.TextField()
 
     def __str__(self):
-        return self.topic
+        return f"{self.topic}, {self.description}"
 
-class AcitivityRecord(models.Model):
+class SubMessage(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, null=True, related_name='sub_message')
+    detail = models.CharField(max_length = 200) 
+
+    def __str__(self):
+        return self.detail
+
+class ActivityRecord(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, null=True)
     assignee = models.CharField(max_length = 30, blank = True)    
     reporter = models.CharField(max_length = 30)    
     date_created = models.DateTimeField(default=timezone.now)
-    date_done = models.DateTimeField(blank = True)
+    date_done = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.message.topic

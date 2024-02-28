@@ -26,6 +26,9 @@ urlpatterns = [
     path('message/update/', update_message , name='update_message'),
     path('message/delete/', delete_message , name='delete_message'),
 
+    path('sub_message/add/', add_sub_message , name='add_sub_message'),
+    path('sub_message/delete/', delete_sub_message , name='delete_sub_message'),
+
     path('content/list/', get_content_list , name='get_content_list'),
     path('content/add/', add_content , name='add_content'),
     path('content/delete/', delete_content , name='delete_content'),
@@ -33,6 +36,7 @@ urlpatterns = [
 
     path('sending/message/', send_message , name='send_message'),
     path('complete/job/', complete_job , name='complete_job'),
+    path('get/job/', get_job , name='get_job'),
 
     path('line/config/get/', get_line_notice_config , name='get_line_notice_config'),
     path('line/config/add/', add_line_notice_config , name='add_line_notice_config'),

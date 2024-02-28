@@ -81,11 +81,11 @@ def send_message(request):
         message = get_object_or_404(Message, pk= message_id)
         message_notify(message, reporter)
 
-        activity = AcitivityRecord.objects.create(
+        activity = ActivityRecord.objects.create(
             message = message,
             reporter = reporter,
         )
-        serializer = AcitivityRecordSerializer(instance=activity)
+        serializer = ActivityRecordSerializer(instance=activity)
         return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -185,8 +185,24 @@ def delete_line_notice_config(request):
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_job(request):
+    try:
+        query_data = BuildingQuerySerializer(data = request.query_params)
 
+        if query_data.is_valid():
+            pk = query_data.validated_data.get('building_id')
+            current_job = ActivityRecord.objects.filter(message__location__floorNumber__buildingInfo__pk = pk).first()
 
+            serializer = ActivityRecordSerializer(instance=current_job)
+            return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "Data format is invalid"}, status=status.HTTP_400_BAD_REQUEST)    
+    except Exception as e:
+        return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -196,7 +212,7 @@ def complete_job(request):
         assignee = request.data.get('assignee')
         date_done = timezone.now
 
-        activity = AcitivityRecord.objects.filter(pk = activity_id)
+        activity = ActivityRecord.objects.filter(pk = activity_id)
         if not activity.exists():
             return Response({"detail": "not found"}, status=status.HTTP_404_NOT_FOUND)
 

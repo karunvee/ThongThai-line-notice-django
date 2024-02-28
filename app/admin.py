@@ -4,11 +4,14 @@ from .models import *
 
 # Register your models here.
 class LineNotifyAdmin(admin.ModelAdmin):
+    search_fields = ['group_name', 'pk']
     list_display = (
         'token_access',
         'pk',
         'group_name',
+        'buildingInfo',
                     )
+    list_filter = ['buildingInfo']
 admin.site.register(LineNotify, LineNotifyAdmin)
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -37,6 +40,16 @@ class LocationAdmin(admin.ModelAdmin):
                     )
 admin.site.register(Location, LocationAdmin)
 
+class StandardMessageAdmin(admin.ModelAdmin):
+    search_fields = ['topic']
+    list_display = (
+        'topic',
+        'pk',
+        'description',
+        'date_created',
+                    )
+admin.site.register(StandardMessage, StandardMessageAdmin)
+
 class MessageAdmin(admin.ModelAdmin):
     search_fields = ['topic']
     list_display = (
@@ -48,6 +61,16 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ['location']
 admin.site.register(Message, MessageAdmin)
 
+class SubMessageAdmin(admin.ModelAdmin):
+    search_fields = ['detail']
+    list_display = (
+        'message',
+        'pk',
+        'detail',
+                    )
+    list_filter = ['message']
+admin.site.register(SubMessage, SubMessageAdmin)
+
 class ContentSlideAdmin(admin.ModelAdmin):
     search_fields = ['content']
     list_display = (
@@ -57,7 +80,7 @@ class ContentSlideAdmin(admin.ModelAdmin):
                     )
 admin.site.register(ContentSlide, ContentSlideAdmin)
 
-class AcitivityRecordAdmin(admin.ModelAdmin):
+class ActivityRecordAdmin(admin.ModelAdmin):
     search_fields = ['reporter', 'assignee']
     list_display = (
         'message',
@@ -66,5 +89,5 @@ class AcitivityRecordAdmin(admin.ModelAdmin):
         'date_created',
         'date_done',
                     )
-    list_filter = ['reporter', 'assignee']
-admin.site.register(AcitivityRecord, AcitivityRecordAdmin)
+    list_filter = ['reporter', 'assignee', 'message__location__floorNumber__buildingInfo']
+admin.site.register(ActivityRecord, ActivityRecordAdmin)

@@ -55,9 +55,9 @@ def delete_building(request):
 def update_building(request):
     try:
         building_id = request.data.get('building_id')
-        new_name = request.data.get('new_name')
+        building_name = request.data.get('building_name')
 
-        Building.objects.filter(pk = building_id).update(building_name = new_name)
+        Building.objects.filter(pk = building_id).update(building_name = building_name)
         return Response({"detail": f"{building_id} was updated"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -61,10 +61,10 @@ def delete_floor(request):
 def update_floor(request):
     try:
         floor_id = request.data.get('floor_id')
-        new_name = request.data.get('new_name')
+        floor_name = request.data.get('floor_name')
         building_id = request.data.get('building_id')
 
-        FloorNumber.objects.filter(pk = floor_id).update(floor_name = new_name, buildingInfo = Building.objects.get(pk = building_id))
+        FloorNumber.objects.filter(pk = floor_id).update(floor_name = floor_name, buildingInfo = Building.objects.get(pk = building_id))
         return Response({"detail": f"{floor_id} was updated"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
