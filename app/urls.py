@@ -2,6 +2,7 @@ from django.urls import path, re_path
 from .views import *
 
 urlpatterns = [
+    path('check_authentication/', check_authentication , name='check_authentication'),
     path('login/', login_user , name='login_user'),
     path('logout/', logout_user , name='logout_user'),
     path('line_notice/information/', get_line_information , name='get_line_information'),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('message/update/', update_message , name='update_message'),
     path('message/delete/', delete_message , name='delete_message'),
 
+    path('sub_message/list/', get_sub_message , name='get_sub_message'),
     path('sub_message/add/', add_sub_message , name='add_sub_message'),
     path('sub_message/delete/', delete_sub_message , name='delete_sub_message'),
 

@@ -69,6 +69,23 @@ def update_message(request):
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_sub_message(request):
+    try:
+        query_data = MessageQuerySerializer(data = request.query_params)
+
+        if query_data.is_valid():
+            pk = query_data.validated_data.get('message_id')
+            subMessage = SubMessage.objects.filter(message__pk = pk)
+            serializer = SubMessageSerializer(instance=subMessage, many=True)
+            return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "Data format is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
