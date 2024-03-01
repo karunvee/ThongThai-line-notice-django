@@ -193,12 +193,12 @@
 							"formdata": [
 								{
 									"key": "message_id",
-									"value": "",
+									"value": "1",
 									"type": "text"
 								},
 								{
 									"key": "reporter",
-									"value": "",
+									"value": "\"\"",
 									"type": "text"
 								}
 							]
@@ -299,6 +299,40 @@
 									"key": "building_id",
 									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Validation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/check_authentication/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"check_authentication",
+								""
 							]
 						}
 					},
@@ -895,6 +929,40 @@
 					"response": []
 				},
 				{
+					"name": "Sub Message",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/sub_message/list/?message_id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sub_message",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "message_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add Message",
 					"request": {
 						"method": "POST",
@@ -1255,6 +1323,48 @@
 								"content",
 								"update",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Line Notify",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer vNbL7PPx0OWdK4qfoxymljaxLbntwINUb6WBEFcr3x1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"hi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://notify-api.line.me/api/notify",
+							"protocol": "https",
+							"host": [
+								"notify-api",
+								"line",
+								"me"
+							],
+							"path": [
+								"api",
+								"notify"
 							]
 						}
 					},

@@ -78,46 +78,49 @@ def send_message(request):
         message_id = request.data.get('message_id')
         reporter = request.data.get('reporter')
 
-        message = get_object_or_404(Message, pk= message_id)
-        message_notify(message, reporter)
+        message = get_object_or_404(Message, pk = message_id)
+        r = message_notify(message, reporter)
+        if not r:
+            return Response({"detail": "sending line notify message failure."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         activity = ActivityRecord.objects.create(
             message = message,
             reporter = reporter,
-        )
-        serializer = ActivityRecordSerializer(instance=activity)
+        ).save()
+
+        serializer = ActivityRecordSerializer(instance=activity, many=True)
         return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
-def message_notify(message, reporter):
+def message_notify(messageObj, reporter):
     line_group = LineNotify.objects.all()
 
     for line_index in line_group:
+        print(line_index)
         LINE_NOTIFY_ACCESS_TOKEN = line_index.token_access
 
         # URL to send a message to LINE Notify
-        LINE_NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
+        url = "https://notify-api.line.me/api/notify"
 
         # Message to send (can be an empty string)
         now = datetime.now(pytz.timezone('Asia/Bangkok'))
-        message = f"\n เรื่อง :  {message.topic} \n รายละเอียด :  {message.description}"
-        message = message + f"\n สถานที่ :  {message.location.floorNumber.buildingInfo.building_name}, {message.location.floorNumber.floor_name}, {message.location.location_name}"
+        message = f"\n เรื่อง :  {messageObj.topic} \n รายละเอียด :  {messageObj.description}"
+        message = message + f"\n สถานที่ :  {messageObj.location.floorNumber.buildingInfo.building_name}, {messageObj.location.floorNumber.floor_name}, {messageObj.location.location_name}"
         message = message + f"\n ผู้แจ้ง : {reporter}"
 
-        headers = {
-            # "Content-Type": "multipart/form-data",
-            "Authorization": f"Bearer {LINE_NOTIFY_ACCESS_TOKEN}"
-        }
+        token = LINE_NOTIFY_ACCESS_TOKEN
+        headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
 
-        data = {
-            "message": message
-        }
+        response = requests.post(url, headers=headers, data = {'message':message})
+        if response.status_code is not 200:
+            return False
+        return True
+        print (response.text)
+        print('response', response, response.status_code)
 
-        # Send a message to the LINE Notify service
-        response = requests.post(LINE_NOTIFY_API_URL, headers=headers, data=data)
 
 
 
