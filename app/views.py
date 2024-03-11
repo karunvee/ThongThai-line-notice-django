@@ -71,15 +71,21 @@ def get_line_information(request):
     
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def send_message(request):
     try:
         message_id = request.data.get('message_id')
+        sub_message_id = request.data.get('sub_message_id')
         reporter = request.data.get('reporter')
 
         message = get_object_or_404(Message, pk = message_id)
-        r = message_notify(message, reporter)
+
+        if sub_message_id:
+            sub_message = SubMessage.objects.get(pk = sub_message_id)
+            sub_message_txt = sub_message.detail
+        else:
+            sub_message_txt = '-'
+
+        r = message_notify(message, sub_message_txt, reporter)
         if not r:
             return Response({"detail": "sending line notify message failure."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -95,7 +101,7 @@ def send_message(request):
 
 
 
-def message_notify(messageObj, reporter):
+def message_notify(messageObj, sub_message_txt,reporter):
     line_group = LineNotify.objects.all()
 
     for line_index in line_group:
@@ -108,18 +114,18 @@ def message_notify(messageObj, reporter):
         # Message to send (can be an empty string)
         now = datetime.now(pytz.timezone('Asia/Bangkok'))
         message = f"\n เรื่อง :  {messageObj.topic} \n รายละเอียด :  {messageObj.description}"
+        message = message + f"\n เพิ่มเติม :  {sub_message_txt} \n"
         message = message + f"\n สถานที่ :  {messageObj.location.floorNumber.buildingInfo.building_name}, {messageObj.location.floorNumber.floor_name}, {messageObj.location.location_name}"
-        message = message + f"\n ผู้แจ้ง : {reporter}"
+        message = message + f"\n ส่วนของ : {reporter}"
 
         token = LINE_NOTIFY_ACCESS_TOKEN
         headers = {'content-type':'application/x-www-form-urlencoded','Authorization':'Bearer '+token}
 
         response = requests.post(url, headers=headers, data = {'message':message})
+        print(response)
         if response.status_code is not 200:
             return False
-        return True
-        print (response.text)
-        print('response', response, response.status_code)
+    return True
 
 
 

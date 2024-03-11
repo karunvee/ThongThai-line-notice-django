@@ -8,13 +8,18 @@ from ..models import *
 from ..serializers import *
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_message_list(request):
     try:
-        messages = Message.objects.all()
-        serializer = MessageWithSubSerializer(instance=messages, many=True)
-        return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        query_data = LocationQuerySerializer(data = request.query_params)
+
+        if query_data.is_valid():
+            pk = query_data.validated_data.get('location_id')
+
+            messages = Message.objects.filter(location__pk = pk)
+            serializer = MessageWithSubSerializer(instance=messages, many=True)
+
+            return Response({"detail": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"detail": "Data format is invalid"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -70,8 +75,6 @@ def update_message(request):
     
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_sub_message(request):
     try:
         query_data = MessageQuerySerializer(data = request.query_params)
